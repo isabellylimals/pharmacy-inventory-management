@@ -86,4 +86,27 @@ public class MedicamentoController {
     public ResponseEntity<Map<Medicamento, Integer>> gerarListaReposicao() {
         return ResponseEntity.ok(medicamentoService.gerarListaReposicao());
     }
+@PutMapping("/{id}")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<Medicamento> atualizarMedicamento(
+        @PathVariable Long id, 
+        @Valid @RequestBody MedicamentoRequestDTO dto) {
+    return ResponseEntity.ok(medicamentoService.atualizarMedicamento(id, dto));
+}
+
+// Desativar medicamento (soft delete)
+@DeleteMapping("/{id}")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<Void> desativarMedicamento(@PathVariable Long id) {
+    medicamentoService.desativarMedicamento(id);
+    return ResponseEntity.noContent().build();
+}
+
+// Reativar medicamento
+@PutMapping("/{id}/reativar")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<Medicamento> reativarMedicamento(@PathVariable Long id) {
+    medicamentoService.reativarMedicamento(id);
+    return ResponseEntity.ok(medicamentoService.buscarPorId(id));
+}
 }

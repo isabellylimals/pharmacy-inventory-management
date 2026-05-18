@@ -75,4 +75,11 @@ public class LoteController {
         response.put("vencido", loteService.isVencido(lote));
         return ResponseEntity.ok(response);
     }
+
+    // Buscar lote por número
+@GetMapping("/buscar/numero")
+@PreAuthorize("hasAnyRole('ADMIN', 'ATENDENTE')")
+public ResponseEntity<Lote> buscarPorNumero(@RequestParam String numeroLote) {
+    return ResponseEntity.ok(loteService.buscarLotePorNumero(numeroLote));
+}
 }

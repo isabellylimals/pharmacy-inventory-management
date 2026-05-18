@@ -39,7 +39,7 @@ public class MovimentacaoEstoque {
     @Column(name = "venda_id")
     private Long vendaId;
 
-    // Construtores
+ 
     public MovimentacaoEstoque() {}
 
     public MovimentacaoEstoque(Usuario usuario, Lote lote, TipoMovimentacao tipo, 

@@ -111,4 +111,6 @@ public class MovimentacaoEstoqueService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         return movimentacaoRepository.findByUsuario(usuario);
     }
+
+
 }

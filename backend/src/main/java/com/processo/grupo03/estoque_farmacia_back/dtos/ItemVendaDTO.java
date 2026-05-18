@@ -2,9 +2,8 @@ package com.processo.grupo03.estoque_farmacia_back.dtos;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
-public class SaidaEstoqueDTO {
+public class ItemVendaDTO {
 
     @NotNull(message = "ID do lote é obrigatório")
     private Long loteId;
@@ -13,10 +12,10 @@ public class SaidaEstoqueDTO {
     @Min(value = 1, message = "Quantidade deve ser maior que zero")
     private Integer quantidade;
 
-    @Size(max = 500, message = "Observação não pode ter mais de 500 caracteres")
-    private String observacao;
+    @NotNull(message = "Preço unitário é obrigatório")
+    @Min(value = 0, message = "Preço deve ser maior ou igual a zero")
+    private Double precoUnitario;
 
-    private Long vendaId; 
 
     public Long getLoteId() { return loteId; }
     public void setLoteId(Long loteId) { this.loteId = loteId; }
@@ -24,9 +23,6 @@ public class SaidaEstoqueDTO {
     public Integer getQuantidade() { return quantidade; }
     public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
 
-    public String getObservacao() { return observacao; }
-    public void setObservacao(String observacao) { this.observacao = observacao; }
-
-    public Long getVendaId() { return vendaId; }
-    public void setVendaId(Long vendaId) { this.vendaId = vendaId; }
+    public Double getPrecoUnitario() { return precoUnitario; }
+    public void setPrecoUnitario(Double precoUnitario) { this.precoUnitario = precoUnitario; }
 }

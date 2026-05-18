@@ -19,7 +19,7 @@ public class DataLoader implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        // Criar usuário ADMIN padrão se não existir
+     
         if (!usuarioRepository.existsByLogin("admin")) {
             Usuario admin = new Usuario();
             admin.setNome("Proprietária");
@@ -30,7 +30,7 @@ public class DataLoader implements CommandLineRunner {
             System.out.println("Usuário ADMIN criado: login=admin / senha=admin123");
         }
         
-        // Criar usuário ATENDENTE padrão se não existir
+      
         if (!usuarioRepository.existsByLogin("atendente")) {
             Usuario atendente = new Usuario();
             atendente.setNome("Atendente");

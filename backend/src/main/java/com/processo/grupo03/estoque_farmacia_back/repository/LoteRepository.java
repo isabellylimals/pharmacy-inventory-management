@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LoteRepository extends JpaRepository<Lote, Long> {
@@ -24,4 +25,6 @@ public interface LoteRepository extends JpaRepository<Lote, Long> {
     
     @Query("SELECT l FROM Lote l WHERE l.dataValidade BETWEEN :inicio AND :fim AND l.quantidadeAtual > 0")
     List<Lote> findLotesProximosVencimento(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+    // Adicione este método
+    Optional<Lote> findByNumeroLote(String numeroLote);
 }

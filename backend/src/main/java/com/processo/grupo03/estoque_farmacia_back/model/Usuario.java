@@ -1,8 +1,11 @@
 package com.processo.grupo03.estoque_farmacia_back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.processo.grupo03.estoque_farmacia_back.enums.PerfilUsuario;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -33,7 +36,15 @@ public class Usuario {
 
     private Boolean ativo = true;
 
-    // Construtores
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<Venda> vendas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<MovimentacaoEstoque> movimentacoes = new ArrayList<>();
+
+   
     public Usuario() {}
 
     public Usuario(String nome, String login, String senha, PerfilUsuario perfil) {
@@ -45,7 +56,7 @@ public class Usuario {
         this.ativo = true;
     }
 
-    // Getters e Setters (sem métodos de negócio)
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -69,4 +80,10 @@ public class Usuario {
 
     public Boolean getAtivo() { return ativo; }
     public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+
+    public List<Venda> getVendas() { return vendas; }
+    public void setVendas(List<Venda> vendas) { this.vendas = vendas; }
+
+    public List<MovimentacaoEstoque> getMovimentacoes() { return movimentacoes; }
+    public void setMovimentacoes(List<MovimentacaoEstoque> movimentacoes) { this.movimentacoes = movimentacoes; }
 }

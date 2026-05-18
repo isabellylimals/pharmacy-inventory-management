@@ -106,4 +106,50 @@ public class MedicamentoService {
         
         return listaReposicao;
     }
+
+
+    // Adicione estes métodos ao MedicamentoService existente
+
+// RF19: Listar por categoria
+public List<Medicamento> listarPorCategoria(String categoria) {
+    CategoriaMedicamento cat;
+    try {
+        cat = CategoriaMedicamento.valueOf(categoria.toUpperCase());
+    } catch (IllegalArgumentException e) {
+        throw new RuntimeException("Categoria inválida. Use ORIGINAL ou GENERICO");
+    }
+    return medicamentoRepository.findByCategoria(cat);
+}
+
+// Atualizar medicamento
+@Transactional
+public Medicamento atualizarMedicamento(Long id, MedicamentoRequestDTO dto) {
+    Medicamento medicamento = buscarPorId(id);
+    
+    medicamento.setNome(dto.getNome());
+    medicamento.setPrincipioAtivo(dto.getPrincipioAtivo());
+    medicamento.setFabricante(dto.getFabricante());
+    medicamento.setCategoria(dto.getCategoria());
+    medicamento.setTipoControle(dto.getTipoControle());
+    medicamento.setEstoqueMinimo(dto.getEstoqueMinimo());
+    
+    return medicamentoRepository.save(medicamento);
+}
+
+// Soft delete - desativar medicamento
+@Transactional
+public void desativarMedicamento(Long id) {
+    Medicamento medicamento = buscarPorId(id);
+    medicamento.setAtivo(false);
+    medicamentoRepository.save(medicamento);
+}
+
+// Reativar medicamento
+@Transactional
+public void reativarMedicamento(Long id) {
+    Medicamento medicamento = medicamentoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Medicamento não encontrado"));
+    medicamento.setAtivo(true);
+    medicamentoRepository.save(medicamento);
+}
 }

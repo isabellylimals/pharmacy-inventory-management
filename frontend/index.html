@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmácia - Sistema de Gestão</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Tela de Login -->
+        <div id="loginScreen" class="screen active">
+            <div class="card">
+                <h1>🏥 Farmácia</h1>
+                <h2>Login</h2>
+                <input type="text" id="login" placeholder="Usuário" value="admin">
+                <input type="password" id="senha" placeholder="Senha" value="admin123">
+                <button onclick="fazerLogin()">Entrar</button>
+                <div class="info">
+                    <small>Admin: admin/admin123 | Atendente: atendente/atendente123</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Principal -->
+        <div id="mainScreen" class="screen">
+            <div class="header">
+                <h1>🏥 Farmácia - Sistema de Gestão</h1>
+                <div class="user-info">
+                    <span id="userName"></span>
+                    <span id="userRole" class="role"></span>
+                    <button onclick="logout()" class="logout">Sair</button>
+                </div>
+            </div>
+
+            <div class="menu">
+                <button onclick="showSection('medicamentos')">💊 Medicamentos</button>
+                <button onclick="showSection('lotes')">📦 Lotes</button>
+                <button onclick="showSection('movimentacoes')">📊 Movimentações</button>
+                <button onclick="showSection('vendas')">💰 Vendas</button>
+                <button onclick="showSection('relatorios')">📈 Relatórios</button>
+                <button id="adminOnlyBtn" onclick="showSection('admin')" style="display:none">⚙️ Admin</button>
+            </div>
+
+            <!-- Seção Medicamentos -->
+            <div id="medicamentos" class="section">
+                <h2>💊 Medicamentos</h2>
+                <div class="toolbar">
+                    <button onclick="carregarMedicamentos()">🔄 Listar Todos</button>
+                    <input type="text" id="buscaNome" placeholder="Buscar por nome">
+                    <button onclick="buscarPorNome()">🔍 Buscar</button>
+                    <input type="text" id="buscaPrincipio" placeholder="Buscar por princípio ativo">
+                    <button onclick="buscarPorPrincipio()">🔍 Buscar</button>
+                    <button id="btnCadastrarMed" onclick="showCadastroMed()" style="display:none">➕ Novo Medicamento</button>
+                </div>
+                <div id="medicamentosList" class="list"></div>
+                
+                <!-- Modal Cadastro Medicamento -->
+                <div id="modalMed" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('modalMed')">&times;</span>
+                        <h3>Cadastrar Medicamento</h3>
+                        <input type="text" id="medNome" placeholder="Nome">
+                        <input type="text" id="medPrincipio" placeholder="Princípio Ativo">
+                        <input type="text" id="medFabricante" placeholder="Fabricante">
+                        <select id="medCategoria">
+                            <option value="GENERICO">Genérico</option>
+                            <option value="ORIGINAL">Original</option>
+                        </select>
+                        <select id="medTipoControle">
+                            <option value="NAO_CONTROLADO">Não Controlado</option>
+                            <option value="CONTROLADO">Controlado</option>
+                        </select>
+                        <input type="text" id="medNumeroLote" placeholder="Número do Lote">
+                        <input type="date" id="medDataValidade">
+                        <input type="number" id="medQuantidade" placeholder="Quantidade Inicial">
+                        <input type="number" id="medEstoqueMinimo" placeholder="Estoque Mínimo" value="5">
+                        <button onclick="cadastrarMedicamento()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Lotes -->
+            <div id="lotes" class="section">
+                <h2>📦 Lotes</h2>
+                <div class="toolbar">
+                    <button onclick="carregarLotes()">🔄 Listar Todos</button>
+                    <button onclick="carregarLotesVencidos()">⚠️ Lotes Vencidos</button>
+                    <button onclick="carregarProximosVencimento()">📅 Próximos 30 dias</button>
+                    <input type="text" id="buscaLoteNumero" placeholder="Número do Lote">
+                    <button onclick="buscarLotePorNumero()">🔍 Buscar</button>
+                    <input type="number" id="loteId" placeholder="ID do Lote">
+                    <button onclick="adicionarEstoque()">➕ Adicionar Estoque</button>
+                    <button onclick="removerEstoque()">➖ Remover Estoque</button>
+                </div>
+                <div id="lotesList" class="list"></div>
+            </div>
+
+            <!-- Seção Movimentações -->
+            <div id="movimentacoes" class="section">
+                <h2>📊 Movimentações de Estoque</h2>
+                <div class="toolbar">
+                    <button onclick="carregarMovimentacoes()">🔄 Listar Todas</button>
+                    <button onclick="carregarMovimentacoesPorTipo('ENTRADA')">📥 Entradas</button>
+                    <button onclick="carregarMovimentacoesPorTipo('SAIDA')">📤 Saídas</button>
+                    <button id="btnEntradaManual" onclick="showEntradaManual()" style="display:none">✚ Entrada Manual</button>
+                </div>
+                <div id="movimentacoesList" class="list"></div>
+
+                <!-- Modal Entrada Manual -->
+                <div id="modalEntrada" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('modalEntrada')">&times;</span>
+                        <h3>Registrar Entrada Manual</h3>
+                        <input type="number" id="entradaLoteId" placeholder="ID do Lote">
+                        <input type="number" id="entradaQuantidade" placeholder="Quantidade">
+                        <input type="text" id="entradaObs" placeholder="Observação">
+                        <button onclick="registrarEntrada()">Registrar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Vendas -->
+            <div id="vendas" class="section">
+                <h2>💰 Vendas</h2>
+                <div class="toolbar">
+                    <button onclick="carregarVendas()">🔄 Listar Todas</button>
+                    <button onclick="showVendaModal()">➕ Nova Venda</button>
+                    <input type="number" id="vendaId" placeholder="ID da Venda">
+                    <button onclick="gerarComprovante()">🧾 Comprovante</button>
+                    <button onclick="cancelarVenda()">❌ Cancelar Venda</button>
+                </div>
+                <div id="vendasList" class="list"></div>
+
+                <!-- Modal Nova Venda -->
+                <div id="modalVenda" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('modalVenda')">&times;</span>
+                        <h3>Nova Venda</h3>
+                        <h4>Itens da Venda</h4>
+                        <div id="itensVenda">
+                            <div class="item-venda">
+                                <input type="number" placeholder="Lote ID" class="loteId">
+                                <input type="number" placeholder="Quantidade" class="qtd">
+                                <input type="number" placeholder="Preço Unitário" class="preco">
+                            </div>
+                        </div>
+                        <button onclick="adicionarItemVenda()">+ Adicionar Item</button>
+                        <input type="text" id="receitaRegistro" placeholder="Registro da Receita (se controlado)">
+                        <label><input type="checkbox" id="encomenda"> É encomenda?</label>
+                        <button onclick="finalizarVenda()">Finalizar Venda</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Relatórios -->
+            <div id="relatorios" class="section">
+                <h2>📈 Relatórios</h2>
+                <div class="toolbar">
+                    <button onclick="carregarEstoqueBaixo()">⚠️ Estoque Baixo</button>
+                    <button onclick="carregarReposicao()">📋 Lista de Reposição</button>
+                    <button onclick="carregarMaisVendidos()">🏆 Mais Vendidos</button>
+                    <button onclick="gerarRelatorioMensal()">📅 Relatório Mensal</button>
+                    <button onclick="exportarCSV()">📎 Exportar CSV</button>
+                </div>
+                <div id="relatoriosResult" class="list"></div>
+            </div>
+
+            <!-- Seção Admin -->
+            <div id="admin" class="section">
+                <h2>⚙️ Administração</h2>
+                <div class="toolbar">
+                    <button onclick="carregarUsuarios()">👥 Listar Usuários</button>
+                    <button onclick="carregarMovimentacoesPorUsuario()">📊 Movimentações por Usuário</button>
+                </div>
+                <div id="adminList" class="list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

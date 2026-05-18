@@ -1,5 +1,6 @@
 package com.processo.grupo03.estoque_farmacia_back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.processo.grupo03.estoque_farmacia_back.enums.CategoriaMedicamento;
 import com.processo.grupo03.estoque_farmacia_back.enums.TipoControle;
 import jakarta.persistence.*;
@@ -41,9 +42,10 @@ public class Medicamento {
     private Boolean ativo = true;
 
     @OneToMany(mappedBy = "medicamento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Lote> lotes = new ArrayList<>();
 
-    // Construtores
+ 
     public Medicamento() {}
 
     public Medicamento(String nome, String principioAtivo, String fabricante, 
@@ -57,7 +59,6 @@ public class Medicamento {
         this.ativo = true;
     }
 
-    // RF06, RF07: Métodos de estoque
     public Integer getEstoqueTotal() {
         return lotes.stream()
                 .filter(lote -> lote.getQuantidadeAtual() > 0)
@@ -69,7 +70,7 @@ public class Medicamento {
         return getEstoqueTotal() <= estoqueMinimo;
     }
 
-    // Getters e Setters
+  
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -103,4 +103,11 @@ public class LoteService {
     public List<Lote> listarTodos() {
         return loteRepository.findAll();
     }
+    // Adicione este método ao LoteService
+
+// Buscar lote por número
+public Lote buscarLotePorNumero(String numeroLote) {
+    return loteRepository.findByNumeroLote(numeroLote)
+            .orElseThrow(() -> new RuntimeException("Lote não encontrado: " + numeroLote));
+}
 }

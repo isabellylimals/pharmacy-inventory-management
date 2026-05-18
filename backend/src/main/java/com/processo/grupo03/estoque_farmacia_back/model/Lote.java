@@ -1,8 +1,11 @@
 package com.processo.grupo03.estoque_farmacia_back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "lotes")
@@ -32,7 +35,16 @@ public class Lote {
 
     @ManyToOne
     @JoinColumn(name = "medicamento_id", nullable = false)
+    @JsonIgnore
     private Medicamento medicamento;
+
+    @OneToMany(mappedBy = "lote")
+    @JsonIgnore
+    private List<ItemVenda> itensVenda = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lote")
+    @JsonIgnore
+    private List<MovimentacaoEstoque> movimentacoes = new ArrayList<>();
 
     // Construtores
     public Lote() {}
@@ -46,7 +58,7 @@ public class Lote {
         this.dataEntrada = LocalDateTime.now();
     }
 
-    // Métodos de validação (na entidade)
+    // Métodos de validação
     public boolean isVencido() {
         return LocalDate.now().isAfter(dataValidade);
     }
@@ -79,4 +91,10 @@ public class Lote {
 
     public Medicamento getMedicamento() { return medicamento; }
     public void setMedicamento(Medicamento medicamento) { this.medicamento = medicamento; }
+
+    public List<ItemVenda> getItensVenda() { return itensVenda; }
+    public void setItensVenda(List<ItemVenda> itensVenda) { this.itensVenda = itensVenda; }
+
+    public List<MovimentacaoEstoque> getMovimentacoes() { return movimentacoes; }
+    public void setMovimentacoes(List<MovimentacaoEstoque> movimentacoes) { this.movimentacoes = movimentacoes; }
 }

@@ -16,7 +16,7 @@ public class EntradaEstoqueDTO {
     @Size(max = 500, message = "Observação não pode ter mais de 500 caracteres")
     private String observacao;
 
-    // Getters e Setters
+  
     public Long getLoteId() { return loteId; }
     public void setLoteId(Long loteId) { this.loteId = loteId; }
 
