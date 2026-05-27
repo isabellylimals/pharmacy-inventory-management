@@ -3,6 +3,8 @@ package com.processo.grupo03.estoque_farmacia_back.service;
 import com.processo.grupo03.estoque_farmacia_back.dtos.EntradaEstoqueDTO;
 import com.processo.grupo03.estoque_farmacia_back.dtos.SaidaEstoqueDTO;
 import com.processo.grupo03.estoque_farmacia_back.enums.TipoMovimentacao;
+import com.processo.grupo03.estoque_farmacia_back.exception.EntidadeNaoEncontradaException;
+import com.processo.grupo03.estoque_farmacia_back.exception.RegraNegocioException;
 import com.processo.grupo03.estoque_farmacia_back.model.Lote;
 import com.processo.grupo03.estoque_farmacia_back.model.MovimentacaoEstoque;
 import com.processo.grupo03.estoque_farmacia_back.model.Usuario;
@@ -37,7 +39,7 @@ public class MovimentacaoEstoqueService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String login = userDetails.getUsername();
         return usuarioRepository.findByLogin(login)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado", "USUARIO_NAO_ENCONTRADO"));
     }
 
     // RF02: Registrar entrada manual de produtos
@@ -46,7 +48,7 @@ public class MovimentacaoEstoqueService {
         Usuario usuario = getUsuarioLogado();
         
         Lote lote = loteRepository.findById(dto.getLoteId())
-                .orElseThrow(() -> new RuntimeException("Lote não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Lote não encontrado", "LOTE_NAO_ENCONTRADO"));
 
         // Adiciona estoque ao lote
         loteService.adicionarEstoque(lote.getId(), dto.getQuantidade());
@@ -69,11 +71,11 @@ public class MovimentacaoEstoqueService {
         Usuario usuario = getUsuarioLogado();
         
         Lote lote = loteRepository.findById(dto.getLoteId())
-                .orElseThrow(() -> new RuntimeException("Lote não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Lote não encontrado", "LOTE_NAO_ENCONTRADO"));
 
         // Verifica se lote está vencido
         if (loteService.isVencido(lote)) {
-            throw new RuntimeException("Não é possível vender produto de lote vencido");
+            throw new RegraNegocioException("Não é possível vender produto de lote vencido", "LOTE_VENCIDO");
         }
 
         // Remove estoque do lote
@@ -108,7 +110,7 @@ public class MovimentacaoEstoqueService {
     // Listar movimentações por usuário
     public List<MovimentacaoEstoque> listarPorUsuario(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado", "USUARIO_NAO_ENCONTRADO"));
         return movimentacaoRepository.findByUsuario(usuario);
     }
 
